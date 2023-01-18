@@ -11,6 +11,12 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     private val list = ArrayList<User>()
 
+    private var onItemClickCallback : OnItemClickCallback? = null
+
+    fun setOnItemClickCallback(onItemClickCallback:OnItemClickCallback){
+        this.onItemClickCallback = onItemClickCallback
+    }
+
     fun setList(users: ArrayList<User>) {
         list.clear()
         list.addAll(users)
@@ -21,6 +27,10 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
     inner class UserViewHolder(val binding: ItemUserBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
+            binding.root.setOnClickListener {
+                onItemClickCallback?.onItemClicked(user)
+            }
+
             binding.apply {
                 Glide.with(itemView)
                     .load(user.avatar_url)
@@ -46,4 +56,8 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
     }
 
     override fun getItemCount(): Int = list.size
+
+    interface OnItemClickCallback{
+        fun onItemClicked(data : User)
+    }
 }
