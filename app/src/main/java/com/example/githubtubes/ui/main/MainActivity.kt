@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubtubes.R
 import com.example.githubtubes.databinding.ActivityMainBinding
 import com.example.githubtubes.ui.main.detail.DetailUserActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,12 +33,15 @@ class MainActivity : AppCompatActivity() {
             override fun onItemClicked(data: User) {
                 Intent (this@MainActivity,DetailUserActivity::class.java).also {
                     it.putExtra(DetailUserActivity.EXTRA_USERNAME,data.login)
+                    it.putExtra(DetailUserActivity.EXTRA_ID,data.id)
                     startActivity(it)
                 }
             }
 
         })
-        viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
+
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         binding.apply {
             rvUser.layoutManager = LinearLayoutManager(this@MainActivity)

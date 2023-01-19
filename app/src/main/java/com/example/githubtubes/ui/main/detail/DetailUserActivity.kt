@@ -2,16 +2,20 @@ package com.example.githubtubes.ui.main.detail
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.githubtubes.databinding.ActivityDetailUserBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailUserActivity : AppCompatActivity() {
 
     companion object{
         const val EXTRA_USERNAME = "extra_username"
+        const val EXTRA_ID = "extra_id"
     }
 
     private lateinit var binding : ActivityDetailUserBinding
@@ -24,6 +28,7 @@ class DetailUserActivity : AppCompatActivity() {
 
 
         val username = intent.getStringExtra(EXTRA_USERNAME )
+        val id = intent.getStringExtra(EXTRA_ID)
         val bundle= Bundle ()
         bundle.putString(EXTRA_USERNAME, username)
 
@@ -44,6 +49,33 @@ class DetailUserActivity : AppCompatActivity() {
                 }
             }
         })
+        var isChecked = false
+        CoroutineScope(Dispatchers.IO).launch {
+            val count = viewModel.checkUser(id)
+            withContext(Dispatchers.Main){
+                if (count != null){
+                    if (count>0){
+                        binding.toggleFavorite.isChecked = true
+                        _isChecked = true
+                    }else {
+                        binding.toggleFavorite.isChecked = false
+                        _isChecked = false
+                    }
+                }
+            }
+        }
+        binding.toggleFavorite.setOnClickListener {
+            _isChecked = ! _isChecked
+            if (_isChecked){
+                viewModel.addToFavorite()
+            }else{
+                viewModel.removeFromFavorite(id)
+            }
+            binding.toggleFavorite.isChecked = _isChecked
+
+        }
+
+
         val SectionPagerAdapter = SectionPagerAdapter(this,supportFragmentManager , bundle)
         binding.apply {
             viewPager.adapter = SectionPagerAdapter
