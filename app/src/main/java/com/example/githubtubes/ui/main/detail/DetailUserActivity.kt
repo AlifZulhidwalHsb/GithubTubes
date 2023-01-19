@@ -49,7 +49,7 @@ class DetailUserActivity : AppCompatActivity() {
                 }
             }
         })
-        var isChecked = false
+        var _isChecked = false
         CoroutineScope(Dispatchers.IO).launch {
             val count = viewModel.checkUser(id)
             withContext(Dispatchers.Main){
@@ -67,9 +67,9 @@ class DetailUserActivity : AppCompatActivity() {
         binding.toggleFavorite.setOnClickListener {
             _isChecked = ! _isChecked
             if (_isChecked){
-                viewModel.addToFavorite()
+                viewModel.addToFavorite(username.toString() , id!!.toInt())
             }else{
-                viewModel.removeFromFavorite(id)
+                viewModel.removeFromFavorite(id!!.toInt())
             }
             binding.toggleFavorite.isChecked = _isChecked
 
