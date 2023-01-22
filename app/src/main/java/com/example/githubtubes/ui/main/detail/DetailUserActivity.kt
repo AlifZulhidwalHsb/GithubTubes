@@ -16,6 +16,7 @@ class DetailUserActivity : AppCompatActivity() {
     companion object{
         const val EXTRA_USERNAME = "extra_username"
         const val EXTRA_ID = "extra_id"
+        const val EXTRA_URL = "extra_url"
     }
 
     private lateinit var binding : ActivityDetailUserBinding
@@ -29,6 +30,7 @@ class DetailUserActivity : AppCompatActivity() {
 
         val username = intent.getStringExtra(EXTRA_USERNAME )
         val id = intent.getStringExtra(EXTRA_ID)
+        val  avatarUrl = intent.getStringExtra(EXTRA_URL)
         val bundle= Bundle ()
         bundle.putString(EXTRA_USERNAME, username)
 
@@ -51,10 +53,10 @@ class DetailUserActivity : AppCompatActivity() {
         })
         var _isChecked = false
         CoroutineScope(Dispatchers.IO).launch {
-            val count = viewModel.checkUser(id)
+            val count = viewModel.checkUser(id!!.toInt())
             withContext(Dispatchers.Main){
                 if (count != null){
-                    if (count>0){
+                    if (count){
                         binding.toggleFavorite.isChecked = true
                         _isChecked = true
                     }else {
@@ -67,7 +69,7 @@ class DetailUserActivity : AppCompatActivity() {
         binding.toggleFavorite.setOnClickListener {
             _isChecked = ! _isChecked
             if (_isChecked){
-                viewModel.addToFavorite(username.toString() , id!!.toInt())
+                viewModel.addToFavorite(username.toString() , id!!.toInt(), avatarUrl.toString())
             }else{
                 viewModel.removeFromFavorite(id!!.toInt())
             }

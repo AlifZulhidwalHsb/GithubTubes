@@ -1,5 +1,6 @@
 package com.example.githubtubes.ui.main.data.local
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -13,9 +14,12 @@ interface FavoriteUserDao {
     @Query("SELECT * FROM favorite_user")
     fun getFavoriteUser() : LiveData<List<FavoriteUser>>
 
-    @Query("SELECT count(*) FROM favorite_user WHERE favorite_user.id = :id")
-    suspend fun checkUser(id: String?) : Int
+    @Query("SELECT EXISTS(SELECT * FROM favorite_user WHERE favorite_user.id = :id)")
+    suspend fun checkUser(id: Int) : Boolean
 
     @Query("DELETE FROM favorite_user WHERE favorite_user.id = :id")
     suspend fun removeFromFavorite(id : Int) : Int
+
+    @Query("SELECT * FROM favorite_user")
+    fun findAll() : Cursor
 }
