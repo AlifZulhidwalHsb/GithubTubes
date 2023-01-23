@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "GithubTubes"
 include ':app'
 include ':consumerapp'
+include ':consumerapp2'
